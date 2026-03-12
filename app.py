@@ -3,11 +3,11 @@ import streamlit as st
 # 1. Configuración de página
 st.set_page_config(page_title="Presupuestador LAMBE", layout="wide", initial_sidebar_state="collapsed")
 
-# CSS para reducir los márgenes y evitar scrolls innecesarios
+# CSS corregido (aumentamos el margen superior a 2.5rem para que no se corte el título)
 st.markdown("""
 <style>
     .block-container {
-        padding-top: 1rem;
+        padding-top: 2.5rem;
         padding-bottom: 1rem;
         max-width: 95%;
     }
@@ -19,7 +19,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("## 📊 Calculadora de Presupuestos LAMBE")
-st.divider()
+st.write("") # Pequeño espacio extra
 
 # 2. DIVISIÓN PRINCIPAL: Izquierda (Inputs) y Derecha (Resultados)
 col_izq, col_der = st.columns([2.2, 1], gap="large")
@@ -28,51 +28,52 @@ col_izq, col_der = st.columns([2.2, 1], gap="large")
 # COLUMNA IZQUIERDA: TODOS LOS INPUTS
 # ==========================================
 with col_izq:
-    st.markdown("### ⚙️ Datos a introducir")
-    st.write("")
-    
-    # Datos Generales (en 1 fila)
-    c1, c2, c3, c4 = st.columns(4)
-    tirada = c1.number_input("📦 Tirada (uds)", min_value=1, value=15000, step=100)
-    paginas_interior = c2.number_input("📄 Págs Interior", min_value=1, value=192, step=1)
-    paginas_cubierta = c3.number_input("📘 Págs Cubierta", min_value=1, value=4, step=1)
-    pliegos_interior = c4.number_input("📑 Pliegos", min_value=1, value=12, step=1)
+    # Añadimos un contenedor con borde nativo para agrupar todo
+    with st.container(border=True):
+        st.markdown("### ⚙️ Datos a introducir")
+        st.write("")
+        
+        # Datos Generales (en 1 fila)
+        c1, c2, c3, c4 = st.columns(4)
+        tirada = c1.number_input("📦 Tirada (uds)", min_value=1, value=15000, step=100)
+        paginas_interior = c2.number_input("📄 Págs Interior", min_value=1, value=192, step=1)
+        paginas_cubierta = c3.number_input("📘 Págs Cubierta", min_value=1, value=4, step=1)
+        pliegos_interior = c4.number_input("📑 Pliegos", min_value=1, value=12, step=1)
 
-    st.write("")
-    st.write("")
-    
-    # Subdivisión para Interior y Cubierta
-    col_int, col_cub = st.columns(2)
-    
-    with col_int:
-        st.markdown("#### 📄 INTERIOR")
-        ci1, ci2 = st.columns(2)
-        with ci1:
-            ancho_int = st.number_input("Ancho (cm)", value=80.0, step=1.0, key="ai")
-            largo_int = st.number_input("Largo (cm)", value=63.0, step=1.0, key="li")
-            gramaje_int = st.number_input("Gramaje (g/m2)", value=150.0, step=1.0, key="gi")
-            precio_papel_int = st.number_input("Papel (€/kg)", value=1.02, step=0.01, format="%.3f", key="pi")
-            encuadernacion_int = st.number_input("Encuadernación (€)", value=129.6, step=1.0, key="ei")
-        with ci2:
-            fijos_imp_int = st.number_input("Fijos Imp. (plancha)", value=250.0, step=1.0, key="fii")
-            sucesivos_imp_int = st.number_input("Suc. Imp. (€/1k)", value=10.0, step=1.0, key="sii")
-            merma_fija_int = st.number_input("Merma Fija (hojas)", value=2350.0, step=1.0, key="mfi")
-            merma_suc_int = st.number_input("Merma Sucesiva", value=1.08, step=0.01, key="msi")
+        st.divider() # Línea separadora limpia
+        
+        # Subdivisión para Interior y Cubierta
+        col_int, col_cub = st.columns(2)
+        
+        with col_int:
+            st.markdown("#### 📄 INTERIOR")
+            ci1, ci2 = st.columns(2)
+            with ci1:
+                ancho_int = st.number_input("Ancho (cm)", value=80.0, step=1.0, key="ai")
+                largo_int = st.number_input("Largo (cm)", value=63.0, step=1.0, key="li")
+                gramaje_int = st.number_input("Gramaje (g/m2)", value=150.0, step=1.0, key="gi")
+                precio_papel_int = st.number_input("Papel (€/kg)", value=1.02, step=0.01, format="%.3f", key="pi")
+                encuadernacion_int = st.number_input("Encuadernación (€)", value=129.6, step=1.0, key="ei")
+            with ci2:
+                fijos_imp_int = st.number_input("Fijos Imp. (plancha)", value=250.0, step=1.0, key="fii")
+                sucesivos_imp_int = st.number_input("Suc. Imp. (€/1k)", value=10.0, step=1.0, key="sii")
+                merma_fija_int = st.number_input("Merma Fija (hojas)", value=2350.0, step=1.0, key="mfi")
+                merma_suc_int = st.number_input("Merma Sucesiva", value=1.08, step=0.01, key="msi")
 
-    with col_cub:
-        st.markdown("#### 📘 CUBIERTA")
-        cc1, cc2 = st.columns(2)
-        with cc1:
-            ancho_cub = st.number_input("Ancho (cm)", value=70.0, step=1.0, key="ac")
-            largo_cub = st.number_input("Largo (cm)", value=100.0, step=1.0, key="lc")
-            gramaje_cub = st.number_input("Gramaje (g/m2)", value=350.0, step=1.0, key="gc")
-            precio_papel_cub = st.number_input("Papel (€/kg)", value=1.20, step=0.01, format="%.3f", key="pc")
-            encuadernacion_cub = st.number_input("Encuadernación (€)", value=27.5, step=1.0, key="ec")
-        with cc2:
-            fijos_imp_cub = st.number_input("Fijos Imp. (€)", value=250.0, step=1.0, key="fic")
-            sucesivos_imp_cub = st.number_input("Suc. Imp. (€/1k)", value=110.0, step=1.0, key="sic")
-            merma_fija_cub = st.number_input("Merma Fija (hojas)", value=500.0, step=1.0, key="mfc")
-            merma_suc_cub = st.number_input("Merma Sucesiva", value=1.10, step=0.01, key="msc")
+        with col_cub:
+            st.markdown("#### 📘 CUBIERTA")
+            cc1, cc2 = st.columns(2)
+            with cc1:
+                ancho_cub = st.number_input("Ancho (cm)", value=70.0, step=1.0, key="ac")
+                largo_cub = st.number_input("Largo (cm)", value=100.0, step=1.0, key="lc")
+                gramaje_cub = st.number_input("Gramaje (g/m2)", value=350.0, step=1.0, key="gc")
+                precio_papel_cub = st.number_input("Papel (€/kg)", value=1.20, step=0.01, format="%.3f", key="pc")
+                encuadernacion_cub = st.number_input("Encuadernación (€)", value=27.5, step=1.0, key="ec")
+            with cc2:
+                fijos_imp_cub = st.number_input("Fijos Imp. (€)", value=250.0, step=1.0, key="fic")
+                sucesivos_imp_cub = st.number_input("Suc. Imp. (€/1k)", value=110.0, step=1.0, key="sic")
+                merma_fija_cub = st.number_input("Merma Fija (hojas)", value=500.0, step=1.0, key="mfc")
+                merma_suc_cub = st.number_input("Merma Sucesiva", value=1.10, step=0.01, key="msc")
 
 # 3. CÁLCULOS MATEMÁTICOS OCULTOS
 peso_hoja_int = (ancho_int * largo_int * gramaje_int) / 10000000
@@ -102,10 +103,7 @@ coste_unitario = total_edicion / tirada
 # COLUMNA DERECHA: RESULTADOS GRANDES
 # ==========================================
 with col_der:
-    st.markdown("### 💰 Resultados")
-    st.write("")
-    
-    # ATENCIÓN: El código HTML debe ir pegado al margen izquierdo para que Streamlit lo procese bien
+    # Código HTML sin espacios a la izquierda para que Streamlit lo procese correctamente
     html_resultados = f"""
 <div style="background-color: #f0fdf4; border: 3px solid #22c55e; border-radius: 15px; padding: 25px 20px; text-align: center; height: 100%; box-shadow: 2px 4px 10px rgba(0,0,0,0.1);">
     <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>
