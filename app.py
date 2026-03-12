@@ -18,7 +18,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("## 📊 Calculadora de Presupuestos LAMBE")
+st.markdown("## 📊 Calculadora de Presupuestos")
 st.write("") # Pequeño espacio extra
 
 # 2. DIVISIÓN PRINCIPAL: Izquierda (Inputs) y Derecha (Resultados)
