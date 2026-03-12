@@ -1,26 +1,36 @@
 import streamlit as st
 
 # 1. Configuración de página
-st.set_page_config(page_title="Presupuestador LAMBE", layout="wide")
+st.set_page_config(page_title="Presupuestador LAMBE", layout="wide", initial_sidebar_state="collapsed")
 
-st.markdown("## 📊 Calculadora de Presupuestos LAMBE")
+# CSS para reducir los márgenes vacíos de la página y aprovechar al máximo la pantalla
+st.markdown("""
+    <style>
+        .block-container {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        h3, h4 {
+            padding-bottom: 0rem;
+            margin-bottom: 0rem;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-# 2. Creamos un "contenedor" vacío arriba del todo para inyectar los resultados luego
+st.markdown("### 📊 Calculadora de Presupuestos LAMBE")
+
+# 2. Contenedor para el resumen superior (tamaño ajustado)
 resultados_superiores = st.container()
 
 st.divider()
 
-# 3. ZONA DE INTRODUCCIÓN DE DATOS (Abajo)
-st.markdown("### ⚙️ Parámetros del Presupuesto")
-
+# 3. ZONA DE INTRODUCCIÓN DE DATOS
 # Datos Generales
 c1, c2, c3, c4 = st.columns(4)
 tirada = c1.number_input("📦 Tirada (unidades)", min_value=1, value=15000, step=100)
 paginas_interior = c2.number_input("📄 Páginas Interior", min_value=1, value=192, step=1)
 paginas_cubierta = c3.number_input("📘 Páginas Cubierta", min_value=1, value=4, step=1)
 pliegos_interior = c4.number_input("📑 Pliegos Interior", min_value=1, value=12, step=1)
-
-st.write("") # Espaciador
 
 # Columnas de Interior y Cubierta
 col_int, col_cub = st.columns(2)
@@ -79,26 +89,26 @@ total_papel = total_papel_int_calc + total_papel_cub_calc
 total_edicion = total_produccion + total_papel
 coste_unitario = total_edicion / tirada
 
-# 5. MOSTRAR RESULTADOS GIGANTES ARRIBA DEL TODO
+# 5. MOSTRAR RESULTADOS ARRIBA (Tamaño optimizado)
 with resultados_superiores:
-    # Banner HTML gigante
+    # Banner HTML más compacto y elegante
     st.markdown(f"""
-        <div style="background-color: #f0fdf4; border: 3px solid #22c55e; border-radius: 15px; padding: 30px; display: flex; justify-content: space-around; align-items: center; margin-bottom: 10px;">
+        <div style="background-color: #f0fdf4; border: 2px solid #22c55e; border-radius: 10px; padding: 10px 20px; display: flex; justify-content: space-around; align-items: center; margin-bottom: 5px; margin-top: 10px;">
             <div style="text-align: center;">
-                <h3 style="color: #166534; margin: 0; padding-bottom: 10px; font-size: 1.5rem;">📚 TOTAL EDICIÓN</h3>
-                <h1 style="color: #15803d; margin: 0; font-size: 3rem;">{total_edicion:,.2f} €</h1>
+                <p style="color: #166534; margin: 0; font-size: 0.9rem; font-weight: bold;">📚 TOTAL EDICIÓN</p>
+                <h2 style="color: #15803d; margin: 0; font-size: 1.6rem;">{total_edicion:,.2f} €</h2>
             </div>
-            <div style="width: 2px; background-color: #22c55e; height: 80px;"></div>
+            <div style="width: 2px; background-color: #22c55e; height: 40px;"></div>
             <div style="text-align: center;">
-                <h3 style="color: #166534; margin: 0; padding-bottom: 10px; font-size: 1.5rem;">💶 COSTE UNITARIO</h3>
-                <h1 style="color: #16a34a; margin: 0; font-size: 4.5rem; font-weight: 900;">{coste_unitario:,.3f} €</h1>
+                <p style="color: #166534; margin: 0; font-size: 0.9rem; font-weight: bold;">💶 COSTE UNITARIO</p>
+                <h2 style="color: #16a34a; margin: 0; font-size: 2.2rem; font-weight: 900;">{coste_unitario:,.3f} €</h2>
             </div>
         </div>
     """, unsafe_allow_html=True)
     
-    # Desglose secundario debajo del banner grande
-    c_desglose1, c_desglose2, c_desglose3, c_desglose4 = st.columns(4)
-    c_desglose1.metric("🏭 Total Producción", f"{total_produccion:,.2f} €")
-    c_desglose2.metric("🌲 Total Papel", f"{total_papel:,.2f} €")
-    c_desglose3.metric("📝 Subtotal Interior", f"{(total_prod_int_calc + total_papel_int_calc):,.2f} €")
-    c_desglose4.metric("📗 Subtotal Cubierta", f"{(total_prod_cub_calc + total_papel_cub_calc):,.2f} €")
+    # Desglose en una sola línea muy fina
+    cd1, cd2, cd3, cd4 = st.columns(4)
+    cd1.caption(f"**🏭 Producción:** {total_produccion:,.2f} €")
+    cd2.caption(f"**🌲 Papel:** {total_papel:,.2f} €")
+    cd3.caption(f"**📝 Subtotal Int.:** {(total_prod_int_calc + total_papel_int_calc):,.2f} €")
+    cd4.caption(f"**📗 Subtotal Cub.:** {(total_prod_cub_calc + total_papel_cub_calc):,.2f} €")
