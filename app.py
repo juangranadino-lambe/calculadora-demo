@@ -111,7 +111,7 @@ with col_der:
     <hr style="border-color: #bbf7d0; margin: 25px 0;">
     <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">📚 TOTAL EDICIÓN</p>
     <h2 style="color: #15803d; font-size: 2.5rem; font-weight: 800; margin: 0;">{total_edicion:,.2f} €</h2>
-    <div style="margin-top: 30px; text-align: left; background-color: #ffffff; padding: 15px; border-radius: 10px; border: 5px solid #bbf7d0;">
+    <div style="margin-top: 30px; text-align: left; background-color: #ffffff; padding: 15px; border-radius: 10px; border: 5px solid #22c55e;">
         <p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🏭 <b>Total Producción:</b> {total_produccion:,.2f} €</p>
         <p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🌲 <b>Total Papel:</b> {total_papel:,.2f} €</p>
         <hr style="border-color: #e5e7eb; margin: 10px 0;">
