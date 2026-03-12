@@ -3,7 +3,7 @@ import streamlit as st
 # 1. Configuración de página
 st.set_page_config(page_title="Presupuestador LAMBE", layout="wide", initial_sidebar_state="collapsed")
 
-# CSS para ajustar márgenes y dar estilo a la caja de la izquierda
+# CSS REFORZADO: Obligamos a Streamlit a pintar el fondo con "!important"
 st.markdown("""
 <style>
     .block-container {
@@ -15,18 +15,19 @@ st.markdown("""
         padding-bottom: 0rem;
         margin-bottom: 0rem;
     }
-    /* Magia para hacer que la caja izquierda sea igual que la derecha */
+    /* Magia obligatoria para la caja de la izquierda */
     div[data-testid="stVerticalBlockBorderWrapper"] {
-        background-color: #f0fdf4;
+        background-color: #f0fdf4 !important;
         border: 3px solid #22c55e !important;
-        border-radius: 15px;
-        padding: 10px;
+        border-radius: 15px !important;
+        padding: 20px !important;
+        box-shadow: 2px 4px 10px rgba(0,0,0,0.1) !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown("## 📊 Calculadora de Presupuestos LAMBE")
-st.write("") # Pequeño espacio extra
+st.write("") 
 
 # 2. DIVISIÓN PRINCIPAL: Izquierda (Inputs) y Derecha (Resultados)
 col_izq, col_der = st.columns([2.2, 1], gap="large")
@@ -35,19 +36,18 @@ col_izq, col_der = st.columns([2.2, 1], gap="large")
 # COLUMNA IZQUIERDA: TODOS LOS INPUTS
 # ==========================================
 with col_izq:
-    # Este contenedor ahora se pintará de verde gracias al CSS de arriba
     with st.container(border=True):
         st.markdown("### ⚙️ Datos a introducir")
         st.write("")
         
-        # Datos Generales (en 1 fila)
+        # Datos Generales
         c1, c2, c3, c4 = st.columns(4)
         tirada = c1.number_input("📦 Tirada (uds)", min_value=1, value=15000, step=100)
         paginas_interior = c2.number_input("📄 Págs Interior", min_value=1, value=192, step=1)
         paginas_cubierta = c3.number_input("📘 Págs Cubierta", min_value=1, value=4, step=1)
         pliegos_interior = c4.number_input("📑 Pliegos", min_value=1, value=12, step=1)
 
-        st.divider() # Línea separadora
+        st.divider() 
         
         # Subdivisión para Interior y Cubierta
         col_int, col_cub = st.columns(2)
