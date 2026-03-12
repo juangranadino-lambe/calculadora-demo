@@ -3,11 +3,11 @@ import streamlit as st
 # 1. Configuración de página
 st.set_page_config(page_title="Presupuestador LAMBE", layout="wide", initial_sidebar_state="collapsed")
 
-# CSS REFORZADO: Obligamos a Streamlit a pintar el fondo con "!important"
+# 2. CSS SÚPER AGRESIVO (Rompe el bloqueo de Streamlit)
 st.markdown("""
 <style>
     .block-container {
-        padding-top: 2.5rem;
+        padding-top: 2rem;
         padding-bottom: 1rem;
         max-width: 95%;
     }
@@ -15,13 +15,19 @@ st.markdown("""
         padding-bottom: 0rem;
         margin-bottom: 0rem;
     }
-    /* Magia obligatoria para la caja de la izquierda */
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        background-color: #f0fdf4 !important;
+    
+    /* Magia CSS: Forzamos TODOS los contenedores con borde a tener este diseño */
+    [data-testid="stVerticalBlockBorderWrapper"] {
         border: 3px solid #22c55e !important;
+        background-color: #f0fdf4 !important;
         border-radius: 15px !important;
-        padding: 20px !important;
-        box-shadow: 2px 4px 10px rgba(0,0,0,0.1) !important;
+        box-shadow: 2px 4px 12px rgba(0,0,0,0.1) !important;
+        padding: 10px !important; /* Ajuste de espacio interior */
+    }
+    
+    /* Esto es CLAVE: elimina el fondo blanco por defecto que pone Streamlit encima de nuestro verde */
+    [data-testid="stVerticalBlockBorderWrapper"] > div {
+        background-color: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -29,25 +35,26 @@ st.markdown("""
 st.markdown("## 📊 Calculadora de Presupuestos LAMBE")
 st.write("") 
 
-# 2. DIVISIÓN PRINCIPAL: Izquierda (Inputs) y Derecha (Resultados)
+# 3. DIVISIÓN PRINCIPAL: Izquierda (Inputs) y Derecha (Resultados)
 col_izq, col_der = st.columns([2.2, 1], gap="large")
 
 # ==========================================
 # COLUMNA IZQUIERDA: TODOS LOS INPUTS
 # ==========================================
 with col_izq:
+    # APLICAMOS EL CONTENEDOR NATIVO A LA IZQUIERDA
     with st.container(border=True):
         st.markdown("### ⚙️ Datos a introducir")
         st.write("")
         
-        # Datos Generales
+        # Datos Generales (en 1 fila)
         c1, c2, c3, c4 = st.columns(4)
         tirada = c1.number_input("📦 Tirada (uds)", min_value=1, value=15000, step=100)
         paginas_interior = c2.number_input("📄 Págs Interior", min_value=1, value=192, step=1)
         paginas_cubierta = c3.number_input("📘 Págs Cubierta", min_value=1, value=4, step=1)
         pliegos_interior = c4.number_input("📑 Pliegos", min_value=1, value=12, step=1)
 
-        st.divider() 
+        st.divider() # Línea separadora
         
         # Subdivisión para Interior y Cubierta
         col_int, col_cub = st.columns(2)
@@ -82,7 +89,7 @@ with col_izq:
                 merma_fija_cub = st.number_input("Merma Fija (hojas)", value=500.0, step=1.0, key="mfc")
                 merma_suc_cub = st.number_input("Merma Sucesiva", value=1.10, step=0.01, key="msc")
 
-# 3. CÁLCULOS MATEMÁTICOS OCULTOS
+# 4. CÁLCULOS MATEMÁTICOS OCULTOS
 peso_hoja_int = (ancho_int * largo_int * gramaje_int) / 10000000
 precio_hoja_int = peso_hoja_int * precio_papel_int
 prod_fijos_int = fijos_imp_int * pliegos_interior
@@ -110,8 +117,14 @@ coste_unitario = total_edicion / tirada
 # COLUMNA DERECHA: RESULTADOS GRANDES
 # ==========================================
 with col_der:
-    html_resultados = f"""
-<div style="background-color: #f0fdf4; border: 3px solid #22c55e; border-radius: 15px; padding: 25px 20px; text-align: center; height: 100%; box-shadow: 2px 4px 10px rgba(0,0,0,0.1);">
+    # APLICAMOS EL CONTENEDOR NATIVO TAMBIÉN A LA DERECHA (Simetría total)
+    with st.container(border=True):
+        st.markdown("### 💰 Resultados")
+        st.write("")
+        
+        # El HTML ya no necesita tener borde y fondo, de eso se encarga el CSS maestro de arriba
+        html_resultados = f"""
+<div style="text-align: center; height: 100%;">
     <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>
     <h1 style="color: #16a34a; font-size: 4rem; font-weight: 900; margin: 0; line-height: 1.1;">{coste_unitario:,.3f} €</h1>
     <hr style="border-color: #bbf7d0; margin: 25px 0;">
@@ -126,4 +139,4 @@ with col_der:
     </div>
 </div>
 """
-    st.markdown(html_resultados, unsafe_allow_html=True)
+        st.markdown(html_resultados, unsafe_allow_html=True)
