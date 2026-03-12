@@ -105,16 +105,16 @@ coste_unitario = total_edicion / tirada
 with col_der:
     # Código HTML sin espacios a la izquierda para que Streamlit lo procese correctamente
     html_resultados = f"""
-<div style="background-color: #f0fdf4; border: 3px solid #22c55e; border-radius: 15px; padding: 25px 20px; text-align: center; height: 100%; box-shadow: 2px 4px 10px rgba(0,0,0,0.1);">
+<div style="background-color: #f0fdf4; border: 3px solid #16a34a; border-radius: 15px; padding: 25px 20px; text-align: center; height: 100%; box-shadow: 2px 4px 10px rgba(0,0,0,0.1);">
     <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>
     <h1 style="color: #16a34a; font-size: 4rem; font-weight: 900; margin: 0; line-height: 1.1;">{coste_unitario:,.3f} €</h1>
-    <hr style="border-color: #bbf7d0; margin: 25px 0;">
+    <hr style="border-color: #16a34a; margin: 25px 0;">
     <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">📚 TOTAL EDICIÓN</p>
-    <h2 style="color: #15803d; font-size: 2.5rem; font-weight: 800; margin: 0;">{total_edicion:,.2f} €</h2>
+    <h2 style="color: #16a34a; font-size: 2.5rem; font-weight: 800; margin: 0;">{total_edicion:,.2f} €</h2>
     <div style="margin-top: 30px; text-align: left; background-color: #ffffff; padding: 15px; border-radius: 10px; border: 5px solid #22c55e;">
         <p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🏭 <b>Total Producción:</b> {total_produccion:,.2f} €</p>
         <p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🌲 <b>Total Papel:</b> {total_papel:,.2f} €</p>
-        <hr style="border-color: #e5e7eb; margin: 10px 0;">
+        <hr style="border-color: #16a34a; margin: 10px 0;">
         <p style="margin: 8px 0; font-size: 1rem; color: #6b7280;">📝 Subtotal Interior: {(total_prod_int_calc + total_papel_int_calc):,.2f} €</p>
         <p style="margin: 8px 0; font-size: 1rem; color: #6b7280;">📗 Subtotal Cubierta: {(total_prod_cub_calc + total_papel_cub_calc):,.2f} €</p>
     </div>
