@@ -106,7 +106,7 @@ with col_der:
     # Código HTML sin espacios a la izquierda para que Streamlit lo procese correctamente
     html_resultados = f"""
 <div style="background-color: #f0fdf4; border: 3px solid #16a34a; border-radius: 15px; padding: 25px 20px; text-align: center; height: 100%; box-shadow: 2px 4px 10px rgba(0,0,0,0.1);">
-    <p style="color: #166534a; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>
+    <p style="color: #16a34a; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>
     <h1 style="color: #16a34a; font-size: 4rem; font-weight: 900; margin: 0; line-height: 1.1;">{coste_unitario:,.3f} €</h1>
     <hr style="border-color: #16a34a; margin: 25px 0;">
     <p style="color: #166534a; font-size: 1.2rem; font-weight: bold; margin: 0;">📚 TOTAL EDICIÓN</p>
