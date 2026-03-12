@@ -3,7 +3,7 @@ import streamlit as st
 # 1. Configuración de página
 st.set_page_config(page_title="Presupuestador LAMBE", layout="wide", initial_sidebar_state="collapsed")
 
-# 2. CSS solo para ajustar márgenes y aprovechar pantalla (sin trucos de colores)
+# 2. CSS PARA EL BORDE GRUESO Y EL FONDO VERDE CLARITO
 st.markdown("""
 <style>
     .block-container {
@@ -14,6 +14,19 @@ st.markdown("""
     h3, h4 {
         padding-bottom: 0rem;
         margin-bottom: 0rem;
+    }
+    
+    /* MAGIA: Borde de 4px verde oscuro y fondo verde clarito */
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border: 4px solid #22c55e !important;
+        border-radius: 15px !important;
+        background-color: #ebfef0 !important;
+    }
+    
+    /* Hacemos transparentes las capas internas de Streamlit para que se vea nuestro fondo verde */
+    div[data-testid="stVerticalBlockBorderWrapper"] > div,
+    div[data-testid="stVerticalBlockBorderWrapper"] > div > div {
+        background-color: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -28,7 +41,6 @@ col_izq, col_der = st.columns([2.2, 1], gap="large")
 # COLUMNA IZQUIERDA: TODOS LOS INPUTS
 # ==========================================
 with col_izq:
-    # CAJA NATIVA DE STREAMLIT (Garantiza que nunca se rompa)
     with st.container(border=True):
         st.markdown("### ⚙️ Datos a introducir")
         st.write("")
@@ -103,29 +115,26 @@ coste_unitario = total_edicion / tirada
 # COLUMNA DERECHA: RESULTADOS GRANDES
 # ==========================================
 with col_der:
-    # SEGUNDA CAJA NATIVA (Gemela a la de la izquierda)
     with st.container(border=True):
         st.markdown("### 💰 Resultados")
         st.write("")
         
-        # Inyectamos el diseño solo en los números para evitar conflictos con el fondo general
-        html_resultados = f"""
-<div style="text-align: center; height: 100%; padding: 10px;">
-    <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>
-    <h1 style="color: #16a34a; font-size: 4rem; font-weight: 900; margin: 0; line-height: 1.1;">{coste_unitario:,.3f} €</h1>
-    
-    <hr style="border-color: #e5e7eb; margin: 25px 0;">
-    
-    <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">📚 TOTAL EDICIÓN</p>
-    <h2 style="color: #15803d; font-size: 2.5rem; font-weight: 800; margin: 0;">{total_edicion:,.2f} €</h2>
-    
-    <div style="margin-top: 30px; text-align: left; background-color: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
-        <p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🏭 <b>Total Producción:</b> {total_produccion:,.2f} €</p>
-        <p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🌲 <b>Total Papel:</b> {total_papel:,.2f} €</p>
-        <hr style="border-color: #e2e8f0; margin: 10px 0;">
-        <p style="margin: 8px 0; font-size: 1rem; color: #6b7280;">📝 Subtotal Interior: {(total_prod_int_calc + total_papel_int_calc):,.2f} €</p>
-        <p style="margin: 8px 0; font-size: 1rem; color: #6b7280;">📗 Subtotal Cubierta: {(total_prod_cub_calc + total_papel_cub_calc):,.2f} €</p>
-    </div>
-</div>
-"""
+        # TRUCO ANTI-FALLOS: Construimos el HTML pegándolo trozo a trozo.
+        # Así es físicamente imposible que Streamlit lo confunda con un bloque de código.
+        html_resultados = (
+            '<div style="text-align: center; height: 100%;">'
+            '<p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>'
+            f'<h1 style="color: #16a34a; font-size: 4rem; font-weight: 900; margin: 0; line-height: 1.1;">{coste_unitario:,.3f} €</h1>'
+            '<hr style="border-color: #22c55e; margin: 25px 0;">'
+            '<p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">📚 TOTAL EDICIÓN</p>'
+            f'<h2 style="color: #15803d; font-size: 2.5rem; font-weight: 800; margin: 0;">{total_edicion:,.2f} €</h2>'
+            '<div style="margin-top: 30px; text-align: left; background-color: #ffffff; padding: 15px; border-radius: 10px; border: 2px solid #22c55e;">'
+            f'<p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🏭 <b>Total Producción:</b> {total_produccion:,.2f} €</p>'
+            f'<p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🌲 <b>Total Papel:</b> {total_papel:,.2f} €</p>'
+            '<hr style="border-color: #bbf7d0; margin: 10px 0;">'
+            f'<p style="margin: 8px 0; font-size: 1rem; color: #6b7280;">📝 Subtotal Interior: {(total_prod_int_calc + total_papel_int_calc):,.2f} €</p>'
+            f'<p style="margin: 8px 0; font-size: 1rem; color: #6b7280;">📗 Subtotal Cubierta: {(total_prod_cub_calc + total_papel_cub_calc):,.2f} €</p>'
+            '</div>'
+            '</div>'
+        )
         st.markdown(html_resultados, unsafe_allow_html=True)
