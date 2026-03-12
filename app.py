@@ -3,7 +3,7 @@ import streamlit as st
 # 1. Configuración de página
 st.set_page_config(page_title="Presupuestador LAMBE", layout="wide", initial_sidebar_state="collapsed")
 
-# CSS corregido (aumentamos el margen superior a 2.5rem para que no se corte el título)
+# CSS para ajustar márgenes y dar estilo a la caja de la izquierda
 st.markdown("""
 <style>
     .block-container {
@@ -14,6 +14,13 @@ st.markdown("""
     h3, h4 {
         padding-bottom: 0rem;
         margin-bottom: 0rem;
+    }
+    /* Magia para hacer que la caja izquierda sea igual que la derecha */
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        background-color: #f0fdf4;
+        border: 3px solid #22c55e !important;
+        border-radius: 15px;
+        padding: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -28,7 +35,7 @@ col_izq, col_der = st.columns([2.2, 1], gap="large")
 # COLUMNA IZQUIERDA: TODOS LOS INPUTS
 # ==========================================
 with col_izq:
-    # Añadimos un contenedor con borde nativo para agrupar todo
+    # Este contenedor ahora se pintará de verde gracias al CSS de arriba
     with st.container(border=True):
         st.markdown("### ⚙️ Datos a introducir")
         st.write("")
@@ -40,7 +47,7 @@ with col_izq:
         paginas_cubierta = c3.number_input("📘 Págs Cubierta", min_value=1, value=4, step=1)
         pliegos_interior = c4.number_input("📑 Pliegos", min_value=1, value=12, step=1)
 
-        st.divider() # Línea separadora limpia
+        st.divider() # Línea separadora
         
         # Subdivisión para Interior y Cubierta
         col_int, col_cub = st.columns(2)
@@ -103,7 +110,6 @@ coste_unitario = total_edicion / tirada
 # COLUMNA DERECHA: RESULTADOS GRANDES
 # ==========================================
 with col_der:
-    # Código HTML sin espacios a la izquierda para que Streamlit lo procese correctamente
     html_resultados = f"""
 <div style="background-color: #f0fdf4; border: 3px solid #22c55e; border-radius: 15px; padding: 25px 20px; text-align: center; height: 100%; box-shadow: 2px 4px 10px rgba(0,0,0,0.1);">
     <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>
