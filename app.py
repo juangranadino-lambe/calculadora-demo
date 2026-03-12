@@ -3,7 +3,7 @@ import streamlit as st
 # 1. Configuración de página
 st.set_page_config(page_title="Presupuestador LAMBE", layout="wide", initial_sidebar_state="collapsed")
 
-# 2. CSS SÚPER AGRESIVO (Rompe el bloqueo de Streamlit)
+# 2. CSS DEFINITIVO (Verde más intenso y forzado en todas las capas)
 st.markdown("""
 <style>
     .block-container {
@@ -16,18 +16,18 @@ st.markdown("""
         margin-bottom: 0rem;
     }
     
-    /* Magia CSS: Forzamos TODOS los contenedores con borde a tener este diseño */
+    /* Borde grueso y VERDE CLARO INTENSO para las cajas */
     [data-testid="stVerticalBlockBorderWrapper"] {
         border: 3px solid #22c55e !important;
-        background-color: #f0fdf4 !important;
+        background-color: #dcfce7 !important; 
         border-radius: 15px !important;
         box-shadow: 2px 4px 12px rgba(0,0,0,0.1) !important;
-        padding: 10px !important; /* Ajuste de espacio interior */
+        padding: 5px !important;
     }
     
-    /* Esto es CLAVE: elimina el fondo blanco por defecto que pone Streamlit encima de nuestro verde */
+    /* Forzamos también el fondo del contenido interno para que no se quede blanco */
     [data-testid="stVerticalBlockBorderWrapper"] > div {
-        background-color: transparent !important;
+        background-color: #dcfce7 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -42,7 +42,6 @@ col_izq, col_der = st.columns([2.2, 1], gap="large")
 # COLUMNA IZQUIERDA: TODOS LOS INPUTS
 # ==========================================
 with col_izq:
-    # APLICAMOS EL CONTENEDOR NATIVO A LA IZQUIERDA
     with st.container(border=True):
         st.markdown("### ⚙️ Datos a introducir")
         st.write("")
@@ -117,12 +116,11 @@ coste_unitario = total_edicion / tirada
 # COLUMNA DERECHA: RESULTADOS GRANDES
 # ==========================================
 with col_der:
-    # APLICAMOS EL CONTENEDOR NATIVO TAMBIÉN A LA DERECHA (Simetría total)
     with st.container(border=True):
         st.markdown("### 💰 Resultados")
         st.write("")
         
-        # El HTML ya no necesita tener borde y fondo, de eso se encarga el CSS maestro de arriba
+        # HTML sin el color de fondo para que herede el nuevo verde intenso de arriba
         html_resultados = f"""
 <div style="text-align: center; height: 100%;">
     <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>
