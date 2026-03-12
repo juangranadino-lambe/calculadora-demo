@@ -1,107 +1,123 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presupuestador LAMBE EDICIONES</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8">
-    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-        <div class="bg-blue-900 text-white p-6">
-            <h1 class="text-2xl font-bold">Calculadora de Presupuestos - LAMBE</h1>
-            <p class="text-sm opacity-80">Gestión de costes editoriales</p>
-        </div>
+import streamlit as st
+import pandas as pd
 
-        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="space-y-4">
-                <h2 class="text-lg font-semibold border-b pb-2 text-gray-700">Datos del Proyecto</h2>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-600">Tirada (Unidades)</label>
-                    <input type="number" id="tirada" value="15000" class="w-full p-2 border rounded-md bg-yellow-50 focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
+st.set_page_config(page_title="Presupuestador LAMBE EDICIONES", layout="wide")
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Páginas Interior</label>
-                        <input type="number" id="pag_int" value="192" class="w-full p-2 border rounded-md bg-yellow-50">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Páginas Cubierta</label>
-                        <input type="number" id="pag_cub" value="4" class="w-full p-2 border rounded-md bg-yellow-50">
-                    </div>
-                </div>
+st.title("Calculadora de Presupuestos - LAMBE EDICIONES")
 
-                <h2 class="text-lg font-semibold border-b pb-2 pt-4 text-gray-700">Especificaciones Papel</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase">Interior (Gramaje)</label>
-                        <input type="number" id="gram_int" value="150" class="w-full p-2 border rounded-md">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase">Cubierta (Gramaje)</label>
-                        <input type="number" id="gram_cub" value="350" class="w-full p-2 border rounded-md">
-                    </div>
-                </div>
-            </div>
+# --- SECCIÓN 1: DATOS DE ENTRADA ---
+st.header("1. Datos de Entrada")
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    tirada = st.number_input("Tirada (unidades)", min_value=1, value=15000, step=100)
+with col2:
+    paginas_interior = st.number_input("Páginas Interior", min_value=1, value=192)
+with col3:
+    paginas_cubierta = st.number_input("Páginas Cubierta", min_value=1, value=4)
+with col4:
+    pliegos_interior = st.number_input("Pliegos Interior (Nº)", min_value=1, value=12)
 
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-bold text-gray-800 mb-6">Resumen de Costes</h2>
-                
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Coste Interior:</span>
-                        <span id="res_int" class="font-mono font-bold text-blue-700">0.00 €</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Coste Cubierta:</span>
-                        <span id="res_cub" class="font-mono font-bold text-blue-700">0.00 €</span>
-                    </div>
-                    <hr class="border-gray-300">
-                    <div class="flex justify-between items-center py-2">
-                        <span class="text-lg font-bold text-gray-800">TOTAL ESTIMADO:</span>
-                        <span id="total_final" class="text-2xl font-black text-green-600">0.00 €</span>
-                    </div>
-                    <div class="text-center pt-4">
-                        <button onclick="calcular()" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-lg transition">
-                            CALCULAR AHORA
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+st.markdown("---")
 
-    <script>
-        function calcular() {
-            // Valores capturados de la interfaz
-            const tirada = parseFloat(document.getElementById('tirada').value);
-            const pagInt = parseFloat(document.getElementById('pag_int').value);
-            const gramInt = parseFloat(document.getElementById('gram_int').value);
-            
-            // Constantes extraídas de tu CSV (puedes hacerlas editables luego)
-            const anchoInt = 80; const largoInt = 63;
-            const precioPapelInt = 1.02;
-            const mermaFijaInt = 2350;
-            const mermaSucesivaInt = 1.08;
+# --- SECCIÓN 2: PARÁMETROS TÉCNICOS ---
+st.header("2. Parámetros Técnicos")
 
-            // Lógica de cálculo (Cerebro de la App)
-            const pesoHojaInt = (anchoInt * largoInt * gramInt) / 10000;
-            const pliegosNecesarios = (tirada * (pagInt / 16) * mermaSucesivaInt) + mermaFijaInt;
-            const totalInt = (pliegosNecesarios * (pesoHojaInt / 1000) * precioPapelInt) + 250; // +250 de fijos
+col_int, col_cub = st.columns(2)
 
-            // Ejemplo simplificado para cubierta
-            const totalCub = (tirada * 0.15) + 250; 
+# PARÁMETROS INTERIOR
+with col_int:
+    st.subheader("INTERIOR")
+    ancho_int = st.number_input("Ancho Interior (cm)", value=80.0)
+    largo_int = st.number_input("Largo Interior (cm)", value=63.0)
+    gramaje_int = st.number_input("Gramaje Interior (g/m2)", value=150.0)
+    precio_papel_int = st.number_input("Precio Papel Interior (€/kg)", value=1.02, format="%.3f")
+    fijos_imp_int = st.number_input("Fijos Impresión Interior (plancha)", value=250.0)
+    sucesivos_imp_int = st.number_input("Sucesivos Impresión Interior (€/1k)", value=10.0)
+    merma_fija_int = st.number_input("Merma Papel Fija Interior", value=2350.0)
+    merma_suc_int = st.number_input("Merma Papel Sucesivo Interior", value=1.08)
+    encuadernacion_int = st.number_input("Encuadernación Interior", value=129.6)
 
-            // Mostrar resultados
-            document.getElementById('res_int').innerText = totalInt.toLocaleString('de-DE', {minimumFractionDigits: 2}) + " €";
-            document.getElementById('res_cub').innerText = totalCub.toLocaleString('de-DE', {minimumFractionDigits: 2}) + " €";
-            document.getElementById('total_final').innerText = (totalInt + totalCub).toLocaleString('de-DE', {minimumFractionDigits: 2}) + " €";
-        }
+# PARÁMETROS CUBIERTA
+with col_cub:
+    st.subheader("CUBIERTA")
+    ancho_cub = st.number_input("Ancho Cubierta (cm)", value=70.0)
+    largo_cub = st.number_input("Largo Cubierta (cm)", value=100.0)
+    gramaje_cub = st.number_input("Gramaje Cubierta (g/m2)", value=350.0)
+    precio_papel_cub = st.number_input("Precio Papel Cubierta (€/kg)", value=1.20, format="%.3f")
+    fijos_imp_cub = st.number_input("Fijos Impresión Cubierta (€)", value=250.0)
+    sucesivos_imp_cub = st.number_input("Sucesivos Impresión Cubierta (€/1k)", value=110.0)
+    merma_fija_cub = st.number_input("Merma Papel Fija Cubierta", value=500.0)
+    merma_suc_cub = st.number_input("Merma Papel Sucesivo Cubierta", value=1.10)
+    encuadernacion_cub = st.number_input("Encuadernación Cubierta", value=27.5)
 
-        // Ejecutar al cargar
-        window.onload = calcular;
-    </script>
-</body>
-</html>
+# --- CÁLCULOS INTERMEDIOS ---
+# Peso de la hoja (kg) = (ancho * largo * gramaje) / 10,000,000
+peso_hoja_int = (ancho_int * largo_int * gramaje_int) / 10000000
+precio_hoja_int = peso_hoja_int * precio_papel_int
+
+peso_hoja_cub = (ancho_cub * largo_cub * gramaje_cub) / 10000000
+precio_hoja_cub = peso_hoja_cub * precio_papel_cub
+
+# Costes Interior
+prod_fijos_int = fijos_imp_int * pliegos_interior
+prod_suc_int = (sucesivos_imp_int * pliegos_interior) + encuadernacion_int
+papel_fijos_int = merma_fija_int * pliegos_interior * precio_hoja_int
+papel_suc_int = pliegos_interior * merma_suc_int * precio_hoja_int * 1000
+
+total_prod_int_calc = prod_fijos_int + (prod_suc_int * (tirada / 1000))
+total_papel_int_calc = papel_fijos_int + (papel_suc_int * (tirada / 1000))
+
+# Costes Cubierta
+prod_fijos_cub = fijos_imp_cub
+prod_suc_cub = sucesivos_imp_cub + encuadernacion_cub
+papel_fijos_cub = merma_fija_cub * precio_hoja_cub
+# Nota: La constante 250 que se observa en tu Excel original para la cubierta equivale a 1000 / 4 (portadas por pliego)
+papel_suc_cub = merma_suc_cub * precio_hoja_cub * 250 
+
+total_prod_cub_calc = prod_fijos_cub + (prod_suc_cub * (tirada / 1000))
+total_papel_cub_calc = papel_fijos_cub + (papel_suc_cub * (tirada / 1000))
+
+st.markdown("---")
+
+# --- SECCIÓN 3: RESUMEN DE COSTES ---
+st.header("3. Resumen de Costes")
+
+col_res1, col_res2 = st.columns(2)
+
+with col_res1:
+    st.subheader("INTERIOR")
+    st.write(f"**PRODUCCIÓN - Fijos:** {prod_fijos_int:,.2f} €")
+    st.write(f"**PRODUCCIÓN - Sucesivos:** {prod_suc_int:,.2f} €")
+    st.write(f"**Subtotal Producción:** {total_prod_int_calc:,.2f} €")
+    st.write(f"**PAPEL - Fijos:** {papel_fijos_int:,.2f} €")
+    st.write(f"**PAPEL - Sucesivos:** {papel_suc_int:,.2f} €")
+    st.write(f"**Subtotal Papel:** {total_papel_int_calc:,.2f} €")
+
+with col_res2:
+    st.subheader("CUBIERTA")
+    st.write(f"**PRODUCCIÓN - Fijos:** {prod_fijos_cub:,.2f} €")
+    st.write(f"**PRODUCCIÓN - Sucesivos:** {prod_suc_cub:,.2f} €")
+    st.write(f"**Subtotal Producción:** {total_prod_cub_calc:,.2f} €")
+    st.write(f"**PAPEL - Fijos:** {papel_fijos_cub:,.2f} €")
+    st.write(f"**PAPEL - Sucesivos:** {papel_suc_cub:,.2f} €")
+    st.write(f"**Subtotal Papel:** {total_papel_cub_calc:,.2f} €")
+
+st.markdown("---")
+
+# --- SECCIÓN 4: TOTALES ---
+st.header("4. Totales del Proyecto")
+
+total_fijos = prod_fijos_int + prod_fijos_cub + papel_fijos_int + papel_fijos_cub
+total_sucesivos = prod_suc_int + prod_suc_cub + papel_suc_int + papel_suc_cub
+
+total_produccion = total_prod_int_calc + total_prod_cub_calc
+total_papel = total_papel_int_calc + total_papel_cub_calc
+total_edicion = total_produccion + total_papel
+coste_unitario = total_edicion / tirada
+
+col_tot1, col_tot2, col_tot3 = st.columns(3)
+col_tot1.metric("TOTAL PRODUCCIÓN", f"{total_produccion:,.2f} €")
+col_tot2.metric("TOTAL PAPEL", f"{total_papel:,.2f} €")
+col_tot3.metric("TOTAL EDICIÓN", f"{total_edicion:,.2f} €")
+
+st.success(f"### COSTE UNITARIO: {coste_unitario:,.3f} € / unidad")
