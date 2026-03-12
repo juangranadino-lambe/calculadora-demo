@@ -6,31 +6,26 @@ st.set_page_config(page_title="Presupuestador LAMBE", layout="wide", initial_sid
 # 2. CSS DEFINITIVO: Pintamos las COLUMNAS, no el contenido interior.
 # Como las columnas son gemelas, siempre miden lo mismo de alto.
 st.markdown("""
-st.markdown("""
 <style>
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 1rem;
-        max-width: 95%;
-    }
-    
-    /* Estilo de caja para las columnas */
-    [data-testid="column"] {
-        background-color: #ffe5e5 !important; /* rojo claro */
-        border: 4px solid #dc2626 !important; /* borde rojo */
-        border-radius: 15px !important;
-        padding: 20px !important;
-    }
-    
-    /* Forzamos a que ambas columnas tengan misma altura */
-    [data-testid="stHorizontalBlock"] {
-        align-items: stretch !important;
-    }
-    
-    h3, h4 {
-        padding-bottom: 0rem;
-        margin-bottom: 0rem;
-    }
+.block-container{
+    padding-top:2rem;
+    max-width:95%;
+}
+
+/* Caja roja para cada columna */
+[data-testid="column"] > div{
+    background-color:#ffe5e5;
+    border:3px solid #dc2626;
+    border-radius:14px;
+    padding:25px;
+    height:100%;
+}
+
+/* Hace que ambas columnas tengan misma altura */
+[data-testid="stHorizontalBlock"]{
+    align-items:stretch;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
