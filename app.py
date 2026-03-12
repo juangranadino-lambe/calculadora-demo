@@ -1,123 +1,123 @@
 import streamlit as st
-import pandas as pd
 
-st.set_page_config(page_title="Presupuestador LAMBE EDICIONES", layout="wide")
+# 1. Configuración de página
+st.set_page_config(page_title="PRESUPUESTOS LAMBE", layout="wide", initial_sidebar_state="collapsed")
 
-st.title("Calculadora de Presupuestos - LAMBE EDICIONES")
+# CSS corregido (aumentamos el margen superior a 2.5rem para que no se corte el título)
+st.markdown("""
+<style>
+    .block-container {
+        padding-top: 2.5rem;
+        padding-bottom: 1rem;
+        max-width: 95%;
+    }
+    h3, h4 {
+        padding-bottom: 0rem;
+        margin-bottom: 0rem;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# --- SECCIÓN 1: DATOS DE ENTRADA ---
-st.header("1. Datos de Entrada")
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    tirada = st.number_input("Tirada (unidades)", min_value=1, value=15000, step=100)
-with col2:
-    paginas_interior = st.number_input("Páginas Interior", min_value=1, value=192)
-with col3:
-    paginas_cubierta = st.number_input("Páginas Cubierta", min_value=1, value=4)
-with col4:
-    pliegos_interior = st.number_input("Pliegos Interior (Nº)", min_value=1, value=12)
+st.markdown("## 📊 Calculadora de Presupuestos LAMBE")
+st.write("") # Pequeño espacio extra
 
-st.markdown("---")
+# 2. DIVISIÓN PRINCIPAL: Izquierda (Inputs) y Derecha (Resultados)
+col_izq, col_der = st.columns([2.2, 1], gap="large")
 
-# --- SECCIÓN 2: PARÁMETROS TÉCNICOS ---
-st.header("2. Parámetros Técnicos")
+# ==========================================
+# COLUMNA IZQUIERDA: TODOS LOS INPUTS
+# ==========================================
+with col_izq:
+    # Añadimos un contenedor con borde nativo para agrupar todo
+    with st.container(border=True):
+        st.markdown("### ⚙️ Datos a introducir")
+        st.write("")
+        
+        # Datos Generales (en 1 fila)
+        c1, c2, c3, c4 = st.columns(4)
+        tirada = c1.number_input("📦 Tirada (uds)", min_value=1, value=15000, step=100)
+        paginas_interior = c2.number_input("📄 Págs Interior", min_value=1, value=192, step=1)
+        paginas_cubierta = c3.number_input("📘 Págs Cubierta", min_value=1, value=4, step=1)
+        pliegos_interior = c4.number_input("📑 Pliegos", min_value=1, value=12, step=1)
 
-col_int, col_cub = st.columns(2)
+        st.divider() # Línea separadora limpia
+        
+        # Subdivisión para Interior y Cubierta
+        col_int, col_cub = st.columns(2)
+        
+        with col_int:
+            st.markdown("#### 📄 INTERIOR")
+            ci1, ci2 = st.columns(2)
+            with ci1:
+                ancho_int = st.number_input("Ancho (cm)", value=80.0, step=1.0, key="ai")
+                largo_int = st.number_input("Largo (cm)", value=63.0, step=1.0, key="li")
+                gramaje_int = st.number_input("Gramaje (g/m2)", value=150.0, step=1.0, key="gi")
+                precio_papel_int = st.number_input("Papel (€/kg)", value=1.02, step=0.01, format="%.3f", key="pi")
+                encuadernacion_int = st.number_input("Encuadernación (€)", value=129.6, step=1.0, key="ei")
+            with ci2:
+                fijos_imp_int = st.number_input("Fijos Imp. (plancha)", value=250.0, step=1.0, key="fii")
+                sucesivos_imp_int = st.number_input("Suc. Imp. (€/1k)", value=10.0, step=1.0, key="sii")
+                merma_fija_int = st.number_input("Merma Fija (hojas)", value=2350.0, step=1.0, key="mfi")
+                merma_suc_int = st.number_input("Merma Sucesiva", value=1.08, step=0.01, key="msi")
 
-# PARÁMETROS INTERIOR
-with col_int:
-    st.subheader("INTERIOR")
-    ancho_int = st.number_input("Ancho Interior (cm)", value=80.0)
-    largo_int = st.number_input("Largo Interior (cm)", value=63.0)
-    gramaje_int = st.number_input("Gramaje Interior (g/m2)", value=150.0)
-    precio_papel_int = st.number_input("Precio Papel Interior (€/kg)", value=1.02, format="%.3f")
-    fijos_imp_int = st.number_input("Fijos Impresión Interior (plancha)", value=250.0)
-    sucesivos_imp_int = st.number_input("Sucesivos Impresión Interior (€/1k)", value=10.0)
-    merma_fija_int = st.number_input("Merma Papel Fija Interior", value=2350.0)
-    merma_suc_int = st.number_input("Merma Papel Sucesivo Interior", value=1.08)
-    encuadernacion_int = st.number_input("Encuadernación Interior", value=129.6)
+        with col_cub:
+            st.markdown("#### 📘 CUBIERTA")
+            cc1, cc2 = st.columns(2)
+            with cc1:
+                ancho_cub = st.number_input("Ancho (cm)", value=70.0, step=1.0, key="ac")
+                largo_cub = st.number_input("Largo (cm)", value=100.0, step=1.0, key="lc")
+                gramaje_cub = st.number_input("Gramaje (g/m2)", value=350.0, step=1.0, key="gc")
+                precio_papel_cub = st.number_input("Papel (€/kg)", value=1.20, step=0.01, format="%.3f", key="pc")
+                encuadernacion_cub = st.number_input("Encuadernación (€)", value=27.5, step=1.0, key="ec")
+            with cc2:
+                fijos_imp_cub = st.number_input("Fijos Imp. (€)", value=250.0, step=1.0, key="fic")
+                sucesivos_imp_cub = st.number_input("Suc. Imp. (€/1k)", value=110.0, step=1.0, key="sic")
+                merma_fija_cub = st.number_input("Merma Fija (hojas)", value=500.0, step=1.0, key="mfc")
+                merma_suc_cub = st.number_input("Merma Sucesiva", value=1.10, step=0.01, key="msc")
 
-# PARÁMETROS CUBIERTA
-with col_cub:
-    st.subheader("CUBIERTA")
-    ancho_cub = st.number_input("Ancho Cubierta (cm)", value=70.0)
-    largo_cub = st.number_input("Largo Cubierta (cm)", value=100.0)
-    gramaje_cub = st.number_input("Gramaje Cubierta (g/m2)", value=350.0)
-    precio_papel_cub = st.number_input("Precio Papel Cubierta (€/kg)", value=1.20, format="%.3f")
-    fijos_imp_cub = st.number_input("Fijos Impresión Cubierta (€)", value=250.0)
-    sucesivos_imp_cub = st.number_input("Sucesivos Impresión Cubierta (€/1k)", value=110.0)
-    merma_fija_cub = st.number_input("Merma Papel Fija Cubierta", value=500.0)
-    merma_suc_cub = st.number_input("Merma Papel Sucesivo Cubierta", value=1.10)
-    encuadernacion_cub = st.number_input("Encuadernación Cubierta", value=27.5)
-
-# --- CÁLCULOS INTERMEDIOS ---
-# Peso de la hoja (kg) = (ancho * largo * gramaje) / 10,000,000
+# 3. CÁLCULOS MATEMÁTICOS OCULTOS
 peso_hoja_int = (ancho_int * largo_int * gramaje_int) / 10000000
 precio_hoja_int = peso_hoja_int * precio_papel_int
-
-peso_hoja_cub = (ancho_cub * largo_cub * gramaje_cub) / 10000000
-precio_hoja_cub = peso_hoja_cub * precio_papel_cub
-
-# Costes Interior
 prod_fijos_int = fijos_imp_int * pliegos_interior
 prod_suc_int = (sucesivos_imp_int * pliegos_interior) + encuadernacion_int
 papel_fijos_int = merma_fija_int * pliegos_interior * precio_hoja_int
 papel_suc_int = pliegos_interior * merma_suc_int * precio_hoja_int * 1000
-
 total_prod_int_calc = prod_fijos_int + (prod_suc_int * (tirada / 1000))
 total_papel_int_calc = papel_fijos_int + (papel_suc_int * (tirada / 1000))
 
-# Costes Cubierta
+peso_hoja_cub = (ancho_cub * largo_cub * gramaje_cub) / 10000000
+precio_hoja_cub = peso_hoja_cub * precio_papel_cub
 prod_fijos_cub = fijos_imp_cub
 prod_suc_cub = sucesivos_imp_cub + encuadernacion_cub
 papel_fijos_cub = merma_fija_cub * precio_hoja_cub
-# Nota: La constante 250 que se observa en tu Excel original para la cubierta equivale a 1000 / 4 (portadas por pliego)
 papel_suc_cub = merma_suc_cub * precio_hoja_cub * 250 
-
 total_prod_cub_calc = prod_fijos_cub + (prod_suc_cub * (tirada / 1000))
 total_papel_cub_calc = papel_fijos_cub + (papel_suc_cub * (tirada / 1000))
-
-st.markdown("---")
-
-# --- SECCIÓN 3: RESUMEN DE COSTES ---
-st.header("3. Resumen de Costes")
-
-col_res1, col_res2 = st.columns(2)
-
-with col_res1:
-    st.subheader("INTERIOR")
-    st.write(f"**PRODUCCIÓN - Fijos:** {prod_fijos_int:,.2f} €")
-    st.write(f"**PRODUCCIÓN - Sucesivos:** {prod_suc_int:,.2f} €")
-    st.write(f"**Subtotal Producción:** {total_prod_int_calc:,.2f} €")
-    st.write(f"**PAPEL - Fijos:** {papel_fijos_int:,.2f} €")
-    st.write(f"**PAPEL - Sucesivos:** {papel_suc_int:,.2f} €")
-    st.write(f"**Subtotal Papel:** {total_papel_int_calc:,.2f} €")
-
-with col_res2:
-    st.subheader("CUBIERTA")
-    st.write(f"**PRODUCCIÓN - Fijos:** {prod_fijos_cub:,.2f} €")
-    st.write(f"**PRODUCCIÓN - Sucesivos:** {prod_suc_cub:,.2f} €")
-    st.write(f"**Subtotal Producción:** {total_prod_cub_calc:,.2f} €")
-    st.write(f"**PAPEL - Fijos:** {papel_fijos_cub:,.2f} €")
-    st.write(f"**PAPEL - Sucesivos:** {papel_suc_cub:,.2f} €")
-    st.write(f"**Subtotal Papel:** {total_papel_cub_calc:,.2f} €")
-
-st.markdown("---")
-
-# --- SECCIÓN 4: TOTALES ---
-st.header("4. Totales del Proyecto")
-
-total_fijos = prod_fijos_int + prod_fijos_cub + papel_fijos_int + papel_fijos_cub
-total_sucesivos = prod_suc_int + prod_suc_cub + papel_suc_int + papel_suc_cub
 
 total_produccion = total_prod_int_calc + total_prod_cub_calc
 total_papel = total_papel_int_calc + total_papel_cub_calc
 total_edicion = total_produccion + total_papel
 coste_unitario = total_edicion / tirada
 
-col_tot1, col_tot2, col_tot3 = st.columns(3)
-col_tot1.metric("TOTAL PRODUCCIÓN", f"{total_produccion:,.2f} €")
-col_tot2.metric("TOTAL PAPEL", f"{total_papel:,.2f} €")
-col_tot3.metric("TOTAL EDICIÓN", f"{total_edicion:,.2f} €")
-
-st.success(f"### COSTE UNITARIO: {coste_unitario:,.3f} € / unidad")
+# ==========================================
+# COLUMNA DERECHA: RESULTADOS GRANDES
+# ==========================================
+with col_der:
+    # Código HTML sin espacios a la izquierda para que Streamlit lo procese correctamente
+    html_resultados = f"""
+<div style="background-color: #f0fdf4; border: 3px solid #22c55e; border-radius: 15px; padding: 25px 20px; text-align: center; height: 100%; box-shadow: 2px 4px 10px rgba(0,0,0,0.1);">
+    <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">💶 COSTE UNITARIO</p>
+    <h1 style="color: #16a34a; font-size: 4rem; font-weight: 900; margin: 0; line-height: 1.1;">{coste_unitario:,.3f} €</h1>
+    <hr style="border-color: #bbf7d0; margin: 25px 0;">
+    <p style="color: #166534; font-size: 1.2rem; font-weight: bold; margin: 0;">📚 TOTAL EDICIÓN</p>
+    <h2 style="color: #15803d; font-size: 2.5rem; font-weight: 800; margin: 0;">{total_edicion:,.2f} €</h2>
+    <div style="margin-top: 30px; text-align: left; background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #bbf7d0;">
+        <p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🏭 <b>Total Producción:</b> {total_produccion:,.2f} €</p>
+        <p style="margin: 8px 0; font-size: 1.1rem; color: #374151;">🌲 <b>Total Papel:</b> {total_papel:,.2f} €</p>
+        <hr style="border-color: #e5e7eb; margin: 10px 0;">
+        <p style="margin: 8px 0; font-size: 1rem; color: #6b7280;">📝 Subtotal Interior: {(total_prod_int_calc + total_papel_int_calc):,.2f} €</p>
+        <p style="margin: 8px 0; font-size: 1rem; color: #6b7280;">📗 Subtotal Cubierta: {(total_prod_cub_calc + total_papel_cub_calc):,.2f} €</p>
+    </div>
+</div>
+"""
+    st.markdown(html_resultados, unsafe_allow_html=True)
