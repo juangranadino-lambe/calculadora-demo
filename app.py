@@ -56,4 +56,4 @@ with col_izq:
             encuadernacion_int = st.number_input("Encuadernación (€)", value=129.6, step=1.0, key="ei")
         with ci2:
             fijos_imp_int = st.number_input("Fijos Imp. (plancha)", value=250.0, step=1.0, key="fii")
-            sucesivos_imp_int = st.number_input("Suc. Imp. (€/1k)", value=10.0, step=1.0, key
+            sucesivos_imp_int = st.number_input("Suc. Imp. (€/1k)", value=10.0, step=1.0, key)
