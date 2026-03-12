@@ -6,6 +6,7 @@ st.set_page_config(page_title="Presupuestador LAMBE", layout="wide", initial_sid
 # 2. CSS DEFINITIVO: Pintamos las COLUMNAS, no el contenido interior.
 # Como las columnas son gemelas, siempre miden lo mismo de alto.
 st.markdown("""
+st.markdown("""
 <style>
     .block-container {
         padding-top: 2rem;
@@ -13,15 +14,15 @@ st.markdown("""
         max-width: 95%;
     }
     
-    /* Le damos el estilo de caja directamente a las columnas de Streamlit */
+    /* Estilo de caja para las columnas */
     [data-testid="column"] {
-        background-color: #ebfef0 !important; /* Verde pastel clarito */
-        border: 4px solid #22c55e !important; /* Borde grueso verde */
+        background-color: #ffe5e5 !important; /* rojo claro */
+        border: 4px solid #dc2626 !important; /* borde rojo */
         border-radius: 15px !important;
-        padding: 20px !important; /* Espaciado interno para que no se pegue a los bordes */
+        padding: 20px !important;
     }
     
-    /* Forzamos a que la fila estire las columnas al máximo de altura */
+    /* Forzamos a que ambas columnas tengan misma altura */
     [data-testid="stHorizontalBlock"] {
         align-items: stretch !important;
     }
